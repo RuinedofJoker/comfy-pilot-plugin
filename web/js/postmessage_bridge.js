@@ -19,8 +19,8 @@ app.registerExtension({
 
         // 监听图变化
         const originalGraphConfigure = app.graph.configure;
-        app.graph.configure = function (data) {
-            let returnVal = originalGraphConfigure.call(this, data);
+        app.graph.configure = function (...args) {
+            const returnVal = originalGraphConfigure.call(app.graph, ...args);
             setTimeout(() => {
                 const currentWorkflow = app.graph.serialize();
                 notifyWorkflowChange(currentWorkflow);
@@ -29,13 +29,8 @@ app.registerExtension({
         };
 
         const originalLoadGraphData = app.loadGraphData;
-        app.loadGraphData = function (data) {
-            let returnVal;
-            if (data) {
-                returnVal = originalLoadGraphData.call(this, data);
-            } else {
-                returnVal = originalLoadGraphData.call(this);
-            }
+        app.loadGraphData = function (...args) {
+            const returnVal = originalLoadGraphData.call(app, ...args);
             setTimeout(() => {
                 const currentWorkflow = app.graph.serialize();
                 notifyWorkflowChange(currentWorkflow);
